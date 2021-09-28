@@ -1,7 +1,7 @@
 package com.gitlab.emradbuba.training.mpeek.rest.controller;
 
 import com.gitlab.emradbuba.training.mpeek.dto.UserDTO;
-import com.gitlab.emradbuba.training.mpeek.rest.exceptions.UserNotFoundException;
+import com.gitlab.emradbuba.training.mpeek.rest.exceptions.UserNotFoundRestException;
 import com.gitlab.emradbuba.training.mpeek.rest.service.UsersService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +21,13 @@ public class UsersRestApi {
 
     @GetMapping("/{login}")
     public UserDTO getByLogin(@PathVariable("login") String login) {
-        log.info("Incoming API request: Get user by login: '{}'", login);
+        log.info("Incoming API request | getByLogin '{}'", login);
         return usersService.getUserByLogin(login)
                 .orElseThrow(getUserNotFoundExceptionSupplier(login));
     }
 
-    private Supplier<UserNotFoundException> getUserNotFoundExceptionSupplier(String login) {
+    private Supplier<UserNotFoundRestException> getUserNotFoundExceptionSupplier(String login) {
         String errorMessage = String.format("Could not get user with login '%s'", login);
-        return () -> new UserNotFoundException(errorMessage);
+        return () -> new UserNotFoundRestException(errorMessage);
     }
 }
