@@ -1,6 +1,7 @@
 package com.gitlab.emradbuba.training.mpeek.rest.controller;
 
 import com.gitlab.emradbuba.training.mpeek.dto.UserDTO;
+import com.gitlab.emradbuba.training.mpeek.persistance.ApiCallRegistry;
 import com.gitlab.emradbuba.training.mpeek.rest.exceptions.UserNotFoundRestException;
 import com.gitlab.emradbuba.training.mpeek.rest.service.UsersService;
 import lombok.AllArgsConstructor;
@@ -18,10 +19,12 @@ import java.util.function.Supplier;
 @AllArgsConstructor
 public class UsersRestApi {
     private final UsersService usersService;
+    private final ApiCallRegistry apiCallRegistry;
 
     @GetMapping("/{login}")
     public UserDTO getByLogin(@PathVariable("login") String login) {
         log.info("Incoming API request | getByLogin '{}'", login);
+        apiCallRegistry.registerApiCall(login);
         return usersService.getUserByLogin(login)
                 .orElseThrow(getUserNotFoundExceptionSupplier(login));
     }
